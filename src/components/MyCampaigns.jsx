@@ -54,7 +54,9 @@ export default function MyCampaigns({ user }) {
       ) : (
         <div className="grid gap-4">
           {myCampaigns.map(c => {
+            // LÓGICA DE PROGRESO Y ESTADO REAL
             const progress = Math.min(100, Math.round((c.used_views / c.required_views) * 100));
+            const isCompleted = c.used_views >= c.required_views;
             const minutes = Math.floor(c.watch_seconds / 60);
             
             return (
@@ -74,10 +76,12 @@ export default function MyCampaigns({ user }) {
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1">
-                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${
-                      c.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
+                    {/* ESTADO DINÁMICO CORREGIDO */}
+                    <span className={`flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${
+                      isCompleted ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'
                     }`}>
-                      {c.status === 'active' ? '● En Curso' : '✓ Completado'}
+                      {!isCompleted && <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>}
+                      {isCompleted ? '✓ Completado' : 'En Curso'}
                     </span>
                     
                     <button 
@@ -97,15 +101,15 @@ export default function MyCampaigns({ user }) {
                       </p>
                       <p className="text-[9px] font-bold text-gray-400 uppercase">Vistas obtenidas</p>
                     </div>
-                    <span className={`text-xs font-black ${progress === 100 ? 'text-green-500' : 'text-indigo-600'}`}>
+                    <span className={`text-xs font-black ${isCompleted ? 'text-green-500' : 'text-indigo-600'}`}>
                       {progress}%
                     </span>
                   </div>
 
-                  {/* Barra de progreso con efecto */}
+                  {/* Barra de progreso con color dinámico */}
                   <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                     <div 
-                      className={`h-full transition-all duration-1000 ease-out ${progress === 100 ? 'bg-green-500' : 'bg-indigo-600'}`}
+                      className={`h-full transition-all duration-1000 ease-out ${isCompleted ? 'bg-green-500' : 'bg-indigo-600'}`}
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
