@@ -77,7 +77,7 @@ function App() {
         <div>
           <h1 className="text-xl font-black italic text-gray-900">YT-BOOST</h1>
           <p className="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">Comunidad de Apoyo</p>
-          <p className="text-[10px] text-red-500 font-black uppercase tracking-tighter animate-pulse mt-1"> ⚠️ Saldo se actualiza al instante</p>
+          <p className="text-[10px] text-red-500 font-black uppercase tracking-tighter animate-pulse mt-1"> ⚠️ Saldo se actualiza al actualizar la pagina</p>
         </div>
         <button 
           onClick={() => supabase.auth.signOut()} 
