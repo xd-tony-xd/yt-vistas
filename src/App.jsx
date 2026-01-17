@@ -5,6 +5,7 @@ import Campaigns from './components/Campaigns';
 import MyCampaigns from './components/MyCampaigns';
 import WatchVideo from './components/WatchVideo';
 import UploadVideo from './components/UploadVideo';
+import Shop from './components/Shop'; // 1. IMPORTAMOS LA TIENDA
 
 function App() {
   const [user, setUser] = useState(null);
@@ -76,7 +77,7 @@ function App() {
         <div>
           <h1 className="text-xl font-black italic text-gray-900">YT-BOOST</h1>
           <p className="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">Comunidad de Apoyo</p>
-          <p className="text-[10px] text-red-500 font-black uppercase tracking-tighter animate-pulse mt-1"> ⚠️ Refresca para actualizar tu saldo</p>
+          <p className="text-[10px] text-red-500 font-black uppercase tracking-tighter animate-pulse mt-1"> ⚠️ Saldo se actualiza al instante</p>
         </div>
         <button 
           onClick={() => supabase.auth.signOut()} 
@@ -92,20 +93,13 @@ function App() {
           <Wallet user={user} />
         </div>
 
-        {/* MENSAJE DE BIENVENIDA O CONSEJO */}
-        <div className="bg-indigo-600 rounded-3xl p-5 mb-8 text-white shadow-xl shadow-indigo-200">
-          <h3 className="font-black text-lg mb-1">¿Sabías que? 💡</h3>
-          <p className="text-indigo-100 text-xs leading-relaxed opacity-90">
-            Ver videos completos ayuda más al algoritmo de YouTube. ¡Apoya a otros para que ellos te apoyen a ti!
-          </p>
-        </div>
-
         {/* NAVEGACIÓN ESTILO APP */}
         <div className="flex gap-2 mb-8 bg-gray-200/50 p-1.5 rounded-[2rem]">
           {[
             { id: 'browse', icon: '📺', label: 'DESCUBRIR' },
             { id: 'mine', icon: '🚀', label: 'MIS VIDEOS' },
-            { id: 'upload', icon: '➕', label: 'IMPULSAR' }
+            { id: 'upload', icon: '➕', label: 'IMPULSAR' },
+            { id: 'shop', icon: '🪙', label: 'RECARGAR' } // 2. AÑADIMOS BOTÓN TIENDA
           ].map((tab) => (
             <button 
               key={tab.id}
@@ -140,6 +134,13 @@ function App() {
           {view === 'upload' && (
             <div className="animate-in zoom-in-95 duration-300">
               <UploadVideo user={user} onComplete={() => setView('mine')} />
+            </div>
+          )}
+
+          {/* 3. VISTA DE LA TIENDA */}
+          {view === 'shop' && (
+            <div className="animate-in slide-in-from-right-4 duration-300">
+              <Shop user={user} onBack={() => setView('browse')} />
             </div>
           )}
         </main>
