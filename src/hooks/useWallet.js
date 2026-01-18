@@ -8,7 +8,6 @@ export function useWallet(userId) {
     if (!userId) return
 
     const fetchBalance = async () => {
-      // Usamos maybeSingle() para que no explote si la fila está tardando en crearse
       const { data, error } = await supabase
         .from('wallets')
         .select('balance')
@@ -22,14 +21,19 @@ export function useWallet(userId) {
     fetchBalance()
 
     const channel = supabase
-      .channel('wallet_changes')
+      .channel(`wallet_user_${userId}`)
       .on('postgres_changes', 
         { event: 'UPDATE', schema: 'public', table: 'wallets', filter: `user_id=eq.${userId}` }, 
-        (payload) => setBalance(payload.new.balance)
+        (payload) => {
+          console.log("Nuevo saldo recibido:", payload.new.balance)
+          setBalance(payload.new.balance)
+        }
       )
       .subscribe()
 
-    return () => supabase.removeChannel(channel)
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [userId])
 
   return balance

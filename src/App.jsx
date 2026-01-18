@@ -105,6 +105,7 @@ function App() {
         <div>
           <h1 className="text-xl font-black italic text-gray-900 leading-none">YT-BOOST</h1>
           <p className="text-[9px] text-indigo-500 font-black uppercase tracking-widest mt-1">Comunidad de Apoyo</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.15em] mt-2 bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-600 bg-[length:200%_auto] animate-gradient-x bg-clip-text text-transparent italic">✨ Juntos podemos • Comparte la web ✨</p>
         </div>
         <button 
           onClick={handleLogout} 
