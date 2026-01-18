@@ -5,7 +5,7 @@ import Campaigns from './components/Campaigns';
 import MyCampaigns from './components/MyCampaigns';
 import WatchVideo from './components/WatchVideo';
 import UploadVideo from './components/UploadVideo';
-import Shop from './components/Shop'; // 1. IMPORTAMOS LA TIENDA
+import Shop from './components/Shop';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,12 +25,23 @@ function App() {
       setLoading(false);
     };
     checkUser();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // FUNCIÓN DE SALIDA CORREGIDA
+  const handleLogout = async () => {
+    const confirm = window.confirm("¿Estás seguro que quieres salir?");
+    if (confirm) {
+      await supabase.auth.signOut();
+      setUser(null);
+      window.location.reload(); // Limpieza total
+    }
+  };
 
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center bg-white">
@@ -46,7 +57,7 @@ function App() {
           COMUNIDAD REAL
         </div>
         <h1 className="text-6xl font-black italic text-gray-900 mb-4 tracking-tighter">
-          YT-<span className="text-indigo-600 text-shadow-sm">BOOST</span>
+          YT-<span className="text-indigo-600">BOOST</span>
         </h1>
         <p className="text-gray-500 max-w-xs mx-auto text-lg leading-tight">
           Apoyémonos entre creadores <br />
@@ -77,11 +88,10 @@ function App() {
         <div>
           <h1 className="text-xl font-black italic text-gray-900">YT-BOOST</h1>
           <p className="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">Comunidad de Apoyo</p>
-          <p className="text-[10px] text-red-500 font-black uppercase tracking-tighter animate-pulse mt-1"> ⚠️ Saldo se actualiza al actualizar la pagina</p>
         </div>
         <button 
-          onClick={() => supabase.auth.signOut()} 
-          className="bg-gray-100 text-gray-400 px-4 py-2 rounded-2xl text-[10px] font-black hover:bg-red-50 hover:text-red-500 transition-all"
+          onClick={handleLogout} 
+          className="bg-red-50 text-red-500 px-4 py-2 rounded-2xl text-[10px] font-black hover:bg-red-600 hover:text-white transition-all"
         >
           SALIR
         </button>
@@ -99,7 +109,7 @@ function App() {
             { id: 'browse', icon: '📺', label: 'DESCUBRIR' },
             { id: 'mine', icon: '🚀', label: 'MIS VIDEOS' },
             { id: 'upload', icon: '➕', label: 'IMPULSAR' },
-            { id: 'shop', icon: '🪙', label: 'RECARGAR' } // 2. AÑADIMOS BOTÓN TIENDA
+            { id: 'shop', icon: '🪙', label: 'RECARGAR' }
           ].map((tab) => (
             <button 
               key={tab.id}
@@ -114,39 +124,23 @@ function App() {
         </div>
 
         {/* VISTAS */}
-        <main className="transition-all duration-300">
+        <main>
           {view === 'browse' && (
             <div className="space-y-4">
               <div className="flex justify-between items-center px-1">
                 <h2 className="text-sm font-black text-gray-800 uppercase tracking-widest">Videos por ver</h2>
-                <span className="text-[10px] font-bold text-gray-400">ACTUALIZADO</span>
+                <span className="text-[10px] font-bold text-green-500 animate-pulse">● EN VIVO</span>
               </div>
               <Campaigns user={user} onSelect={setSelectedCampaign} />
             </div>
           )}
 
-          {view === 'mine' && (
-            <div className="animate-in slide-in-from-bottom-4 duration-500">
-              <MyCampaigns user={user} />
-            </div>
-          )}
-
-          {view === 'upload' && (
-            <div className="animate-in zoom-in-95 duration-300">
-              <UploadVideo user={user} onComplete={() => setView('mine')} />
-            </div>
-          )}
-
-          {/* 3. VISTA DE LA TIENDA */}
-          {view === 'shop' && (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <Shop user={user} onBack={() => setView('browse')} />
-            </div>
-          )}
+          {view === 'mine' && <MyCampaigns user={user} />}
+          {view === 'upload' && <UploadVideo user={user} onComplete={() => setView('mine')} />}
+          {view === 'shop' && <Shop user={user} onBack={() => setView('browse')} />}
         </main>
       </div>
 
-      {/* OVERLAY: WATCH VIDEO */}
       {selectedCampaign && (
         <WatchVideo 
           campaign={selectedCampaign} 
