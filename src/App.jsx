@@ -32,6 +32,20 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const handleLogout = async () => {
+    if (window.confirm("¿Cerrar sesión en YT-BOOST?")) {
+      try {
+        await supabase.auth.signOut();
+        localStorage.clear();
+        sessionStorage.clear();
+        setUser(null);
+        window.location.replace(window.location.origin);
+      } catch (err) {
+        window.location.reload();
+      }
+    }
+  };
+
   const handleLogin = async () => {
     const referrerId = localStorage.getItem('referrer_id');
     await supabase.auth.signInWithOAuth({
@@ -47,73 +61,117 @@ function App() {
     const urlProd = "https://yt-vistas.vercel.app"; 
     const base = window.location.hostname === 'localhost' ? urlProd : window.location.origin;
     navigator.clipboard.writeText(`${base}?ref=${user.id}`);
-    alert("🚀 Link copiado. ¡Gana 40 monedas por cada amigo!");
+    alert("🚀 ¡Link Maestro copiado! +40 monedas por cada amigo.");
   };
 
-  if (loading) return <div className="h-screen flex items-center justify-center font-black text-indigo-600 animate-pulse">CARGANDO...</div>;
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-white font-black text-indigo-600 animate-pulse text-sm tracking-[0.3em]">
+      YT-BOOST...
+    </div>
+  );
 
   if (!user) return (
-    <div className="h-screen flex flex-col items-center justify-center p-6 bg-white text-center">
-      <h1 className="text-5xl font-black italic mb-2 tracking-tighter text-gray-900">YT-<span className="text-indigo-600">BOOST</span></h1>
-      <p className="text-gray-400 mb-8 font-bold italic">Vistas reales garantizadas.</p>
-      <button onClick={handleLogin} className="bg-black text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 shadow-xl active:scale-95 transition-all">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="g" />
+    <div className="h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-indigo-50 text-center">
+      <div className="inline-block bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] mb-6 shadow-lg shadow-indigo-100">
+        PLATAFORMA #1 CREADORES
+      </div>
+      
+      <h1 className="text-7xl font-black italic mb-4 tracking-tighter text-gray-900 leading-none">
+        YT-<span className="text-indigo-600">BOOST</span>
+      </h1>
+
+      <div className="space-y-2 mb-10">
+        <p className="text-gray-900 font-black text-2xl italic uppercase tracking-tighter">
+          Vistas reales • Subs • Likes
+        </p>
+        <p className="text-gray-500 font-medium text-sm max-w-[280px] mx-auto leading-tight">
+          La comunidad más grande para crecer en YouTube de forma orgánica y segura.
+        </p>
+      </div>
+
+      <button 
+        onClick={handleLogin} 
+        className="bg-gray-900 text-white px-12 py-5 rounded-[2.5rem] font-black shadow-2xl transition-all active:scale-95 flex items-center gap-3 border-b-4 border-gray-700 hover:bg-black"
+      >
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-6 h-6" alt="g" />
         Entrar con Google
       </button>
+
+      <div className="mt-12 flex gap-4 text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+        <span className="bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-indigo-50">⚡ Instantáneo</span>
+        <span className="bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-indigo-50">🛡️ 100% Seguro</span>
+      </div>
     </div>
   );
 
   return (
     <div className="max-w-xl mx-auto min-h-screen bg-white flex flex-col font-sans">
-      <header className="px-6 py-4 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-50">
-        <h1 className="text-xl font-black italic tracking-tighter">YT-BOOST</h1>
-        <button onClick={() => supabase.auth.signOut()} className="text-[9px] font-black text-gray-300 uppercase tracking-widest hover:text-red-500">Salir</button>
+      <header className="px-6 py-6 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div>
+          <h1 className="text-2xl font-black italic tracking-tighter leading-none">YT-BOOST</h1>
+          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-1.5 italic">Comunidad Activa</p>
+        </div>
+        <button 
+          onClick={handleLogout} 
+          className="bg-red-50 text-red-600 px-5 py-2.5 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition-all shadow-sm active:scale-90 uppercase tracking-tighter"
+        >
+          SALIR
+        </button>
       </header>
 
       <div className="px-5 pb-24">
-        <div className="my-4"><Wallet user={user} /></div>
+        <div className="my-6"><Wallet user={user} /></div>
 
-        {/* --- BANNER DE REFERIDOS COMPACTO --- */}
-        <div className="relative overflow-hidden bg-gray-900 rounded-[2rem] p-[2px] mb-6 shadow-lg">
+        {/* --- BANNER DE REFERIDOS RE-AJUSTADO (MÁS GRANDE Y CLARO) --- */}
+        <div className="relative overflow-hidden bg-gray-900 rounded-[2rem] p-[2px] mb-8 shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-gradient-x"></div>
-          <div className="relative bg-gray-900 rounded-[1.9rem] p-4 flex items-center justify-between gap-4">
-            <div className="flex-1">
+          <div className="relative bg-gray-900 rounded-[1.9rem] px-5 py-5 flex items-center justify-between gap-3">
+            <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="bg-indigo-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">Regalo</span>
-                <p className="text-white font-black text-sm italic">¡GANA +40 🪙!</p>
+                <span className="bg-white text-black text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-tighter">MEGA BONO</span>
+                <p className="text-white font-black text-base italic tracking-tighter truncate">¡GANA +40 🪙!</p>
               </div>
-              <p className="text-[10px] text-gray-400 font-medium">Por cada amigo invitado.</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest truncate">Por invitar amigos reales</p>
             </div>
             <button 
               onClick={copyReferralLink} 
-              className="bg-white text-black font-black text-[10px] px-4 py-2.5 rounded-xl hover:bg-indigo-50 active:scale-95 transition-all shadow-md shrink-0"
+              className="bg-white text-black font-black text-[11px] px-5 py-3.5 rounded-2xl active:scale-95 transition-all shadow-lg shrink-0 whitespace-nowrap uppercase tracking-tighter border-b-2 border-gray-200"
             >
               COPIAR LINK 🔗
             </button>
           </div>
         </div>
 
-        {/* NAVEGACIÓN COMPACTA */}
-        <div className="flex gap-2 mb-6 bg-gray-100 p-1.5 rounded-[1.8rem]">
+        {/* NAVEGACIÓN */}
+        <div className="flex gap-2 mb-10 bg-gray-100 p-2 rounded-[2.2rem]">
           {[
             { id: 'browse', icon: '📺', label: 'DESCUBRIR' },
             { id: 'mine', icon: '🚀', label: 'MIS VIDEOS' },
             { id: 'upload', icon: '➕', label: 'IMPULSAR' },
             { id: 'shop', icon: '🪙', label: 'RECARGAR' }
           ].map((tab) => (
-            <button key={tab.id} onClick={() => setView(tab.id)} className={`flex-1 py-3 rounded-[1.4rem] font-black text-[8px] tracking-widest transition-all flex flex-col items-center ${view === tab.id ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-400'}`}>
-              <span className="text-base mb-0.5">{tab.icon}</span>
+            <button 
+              key={tab.id} 
+              onClick={() => setView(tab.id)} 
+              className={`flex-1 py-4 rounded-[1.8rem] font-black text-[9px] tracking-tighter transition-all flex flex-col items-center gap-1 ${
+                view === tab.id ? 'bg-white shadow-md text-indigo-600 scale-105' : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              <span className="text-xl mb-0.5">{tab.icon}</span>
               {tab.label}
             </button>
           ))}
         </div>
 
-        <main>
+        <main className="animate-in fade-in slide-in-from-bottom-3 duration-500">
           {view === 'browse' && (
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex justify-between items-center px-1">
-                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Explorar Videos</h2>
-                <span className="text-[8px] font-black text-green-500 bg-green-50 px-2 py-0.5 rounded-full uppercase">En Vivo</span>
+                <h2 className="text-[12px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Directorio</h2>
+                <div className="flex items-center gap-2 text-green-600">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">Live Feed</span>
+                </div>
               </div>
               <Campaigns user={user} onSelect={setSelectedCampaign} />
             </div>
